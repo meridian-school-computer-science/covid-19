@@ -8,7 +8,7 @@ path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projec
 filename = 'total_cases_23_mar.csv'
 date_title = '23 Mar'
 
-# a change
+# a change also from inside github
 
 frame = pd.read_csv(path+filename)
 frame['date'] = pd.to_datetime(frame.date, format='%Y-%m-%d')
