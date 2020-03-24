@@ -1,12 +1,14 @@
 # data from 22 March 2020
 # https://ourworldindata.org/coronavirus-source-data
+# potential state data: https://data.world/covid-19-data-resource-hub/covid-19-case-counts/workspace/file?filename=COVID-19+Cases.csv
+
 import pandas as pd
 import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'total_cases_23_mar.csv'
-date_title = '23 Mar'
+filename = 'total_cases_24_mar.csv'
+date_title = '24 Mar'
 
 # a change also from inside github
 
