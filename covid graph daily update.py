@@ -16,11 +16,11 @@ frame = pd.read_csv(path+filename)
 frame['date'] = pd.to_datetime(frame.date, format='%Y-%m-%d')
 
 # Which Countries are we going to graph
-countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan' ]
-colors =    [ "red",  "blue",           "green",           "black",        "purple",           "orange",  "magenta"]
+countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan', 'Spain Italy+8' ]
+colors =    [ "red",  "blue",           "green",           "black",        "purple",           "orange",  "magenta",   'yellow']
 reference_date = pd.Timestamp.today()
 
-frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States of America', 'Denmark', 'Japan', 'United Kingdom'])
+frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States of America', 'Denmark', 'Japan', 'United Kingdom', 'Spain'])
 
 # for x axis
 frame3['Days from Today'] = frame3['date'].sub(reference_date).dt.days
@@ -36,6 +36,7 @@ frame3['Germany Italy+8'] = frame3['Germany'].shift(periods=-8)
 frame3['Denmark Italy+14'] = frame3['Denmark'].shift(periods=-14)
 frame3['USA Italy+12'] = frame3['United States of America'].shift(periods=-12)
 frame3['UK Italy+13'] = frame3['United Kingdom'].shift(periods=-13)
+frame3['Spain Italy+8'] = frame3['Spain'].shift(periods=-8)
 
 # set the title
 plt.title('COVID-19 Confirmed Cases')
