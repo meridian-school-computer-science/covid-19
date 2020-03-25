@@ -1,41 +1,42 @@
 # data from 22 March 2020
 # https://ourworldindata.org/coronavirus-source-data
 # potential state data: https://data.world/covid-19-data-resource-hub/covid-19-case-counts/workspace/file?filename=COVID-19+Cases.csv
-
 import pandas as pd
 import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'COVID-19 Cases.csv'
-date_title = '24 Mar'
+filename = 'time_series_19-covid-Confirmed.csv'
+date_title = '25 Mar'
+states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
+         'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusets', 'Tennessee', 'Indiana',
+         'Missouri', 'Maryland', 'Wisconsin', 'Colorado', 'Minnesota', 'South Carolina', 'Alabama', 'Louisiana', 
+         'Kentucky', 'Oregon', 'Oklahoma', 'Connecticut', 'Utah', 'Puerto Rico', 'Iowa', 'Nevada', 'Arcansas',
+         'Mississippi', 'Kansas', 'New Mexico', 'Nebraska', 'West Virginia', 'Idaho', 'Hawaii', 'New Hampshire',
+         'Maine', 'Montana', 'Rhode Island', 'Delaware', 'South Dakota', 'North Dakota', 'Alaska', 'District of Columbia',
+         'Vermont', 'Wyoming', 'Guam', 'U.S. Virgin Islands', 'American Samoa']
+watch_states = ['New York', 'Washington', 'California', 'Louisiana', 'Texas', 'District of Columbia']
+colors =    [ "red",        "blue",        "green",    "black",     "purple",   "orange",  "yellow" , "magenta"]
 
 # a change also from inside github
 
 frame = pd.read_csv(path+filename)
-frame['date'] = pd.to_datetime(frame.date, format='%Y-%m-%d')
 
-# Which Countries are we going to graph
-countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan' ]
-colors =    [ "red",  "blue",           "green",           "black",        "purple",           "orange",  "magenta"]
+
+us_frame = frame[frame['Province/State'].isin(states)]
+us_frame.set_index('Province/State', inplace=True)
+us_transpose = us_frame.transpose()
+us_transpose.drop(['Lat', 'Long', 'Country/Region'], inplace=True)
+us_transpose.reset_index(inplace=True)
+us_transpose['index'] = pd.to_datetime(us_transpose['index'], format='%m/%d/%y')
+
+us_transpose.rename(columns = {'index': 'Date'}, inplace=True)
+blank_rows = range(0, 48)
+us_transpose.drop(blank_rows, inplace=True)
+
 reference_date = pd.Timestamp.today()
-
-frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States of America', 'Denmark', 'Japan', 'United Kingdom'])
-
 # for x axis
-frame3['Days from Today'] = frame3['date'].sub(reference_date).dt.days
-
-# manually adjust a Country's graph based on Italy
-# these lines shift their data column so it will align with Italy graph at the point that their outbreak became a problem
-# 
-# looking for points where a country's graph drops off of Italy's line (note: Japan from the start, and Denmark)
-# limitation on this graph is data based on each nation's testing (that varies)
-
-frame3['France Italy+8'] = frame3['France'].shift(periods=-8)
-frame3['Germany Italy+8'] = frame3['Germany'].shift(periods=-8)
-frame3['Denmark Italy+14'] = frame3['Denmark'].shift(periods=-14)
-frame3['USA Italy+12'] = frame3['United States of America'].shift(periods=-12)
-frame3['UK Italy+13'] = frame3['United Kingdom'].shift(periods=-13)
+us_transpose['Days from Today'] = us_transpose['Date'].sub(reference_date).dt.days
 
 # set the title
 plt.title('COVID-19 Confirmed Cases')
@@ -47,9 +48,8 @@ plt.title(date_title, loc='right')
 ax = plt.gca()  
 plt.yscale('log')
 
-# based on the countries list: construct the graph
-for i, country in enumerate(countries): 
-    frame3.plot(kind='line', x='Days from Today', y=country, color=colors[i], ax=ax)
 
-# show it
+for i, state in enumerate(watch_states): 
+    us_transpose.plot(kind='line', x='Days from Today', y=state, color=colors[i], ax=ax)
+
 plt.show()
