@@ -5,6 +5,11 @@ import datetime as dt
 
 # https://www.statista.com/topics/6084/coronavirus-covid-19-in-the-us/
 
+
+# here is a new line
+
+
+
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
 filename = 'mac_us_states_deaths.csv'
 date_title = '27 Mar'
