@@ -1,56 +1,69 @@
-# data from 22 March 2020
-# https://ourworldindata.org/coronavirus-source-data
-# potential state data: https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
-
-
+import pandas as pd
 import csv
 from matplotlib import pyplot as plt
 import datetime as dt
+
+# https://www.statista.com/topics/6084/coronavirus-covid-19-in-the-us/
+
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'time_series_19-covid-Confirmed-25 Mar.csv'
-date_title = '25 Mar'
+filename = 'mac_us_states_deaths.csv'
+date_title = '27 Mar'
+death_rate_adjustment = 167
+
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
-         'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusets', 'Tennessee', 'Indiana',
+         'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
          'Missouri', 'Maryland', 'Wisconsin', 'Colorado', 'Minnesota', 'South Carolina', 'Alabama', 'Louisiana', 
          'Kentucky', 'Oregon', 'Oklahoma', 'Connecticut', 'Utah', 'Puerto Rico', 'Iowa', 'Nevada', 'Arcansas',
          'Mississippi', 'Kansas', 'New Mexico', 'Nebraska', 'West Virginia', 'Idaho', 'Hawaii', 'New Hampshire',
          'Maine', 'Montana', 'Rhode Island', 'Delaware', 'South Dakota', 'North Dakota', 'Alaska', 'District of Columbia',
          'Vermont', 'Wyoming', 'Guam', 'U.S. Virgin Islands', 'American Samoa']
-watch_states = ['New York', 'Washington', 'California', 'Louisiana', 'Texas', 'District of Columbia']
-colors =    [ "red",        "blue",        "green",    "black",     "purple",   "orange",  "yellow" , "magenta"]
 
-# a change also from inside github
+state_abbreviation = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+                       'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+                       'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+                       'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+                       'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
 
 frame = pd.read_csv(path+filename)
 
 
-us_frame = frame[frame['Province/State'].isin(states)]
-us_frame.set_index('Province/State', inplace=True)
-us_transpose = us_frame.transpose()
-us_transpose.drop(['Lat', 'Long', 'Country/Region'], inplace=True)
+states_of_interest = ['NY', 'LA NY+4', 'NJ NY+4', 'CA NY+5', 'TX NY+8']  
+# holding  , 'FL NY+14',   'WA NY+14'
+colors =            [ "red",        "blue",   "green",  "purple",    "black",   "orange",        "yellow" , "magenta"]
+                     
+frame = pd.read_csv(path+filename)
+frame.set_index('State', inplace=True)
+
+us_transpose = frame.transpose()
 us_transpose.reset_index(inplace=True)
-us_transpose['index'] = pd.to_datetime(us_transpose['index'], format='%m/%d/%y')
 
 us_transpose.rename(columns = {'index': 'Date'}, inplace=True)
-blank_rows = range(0, 48)
-us_transpose.drop(blank_rows, inplace=True)
+us_transpose['Date'] = pd.to_datetime(us_transpose['Date'], format='%m/%d/%y')
 
+# reference date
 reference_date = pd.Timestamp.today()
 # for x axis
 us_transpose['Days from Today'] = us_transpose['Date'].sub(reference_date).dt.days
 
+# build date adjustment State data
+us_transpose['NY'] = death_rate_adjustment * us_transpose['New York']
+us_transpose['LA NY+4'] = death_rate_adjustment * us_transpose['Louisiana'].shift(periods=-4)
+us_transpose['CA NY+5'] = death_rate_adjustment * us_transpose['California'].shift(periods=-5)
+us_transpose['NJ NY+4'] = death_rate_adjustment * us_transpose['New Jersey'].shift(periods=-4)
+#us_transpose['WA NY+14'] = death_rate_adjustment * us_transpose['Washington'].shift(periods=-14)
+#us_transpose['FL NY+14'] = death_rate_adjustment * us_transpose['Florida'].shift(periods=-14)
+us_transpose['TX NY+8'] = death_rate_adjustment * us_transpose['Texas'].shift(periods=-8)
+
+
+
 # set the title
-plt.title('COVID-19 Confirmed Cases')
+plt.title('States COVID-19 Estimated Cases')
 plt.title('Log Scale', loc='left')
 plt.title(date_title, loc='right')
 
-
-# set x current axis with a logritmetic scale that greatly helps see the pace of exponential increase
-ax = plt.gca()  
+ax = plt.gca()  # get current axis
 plt.yscale('log')
-
-
-for i, state in enumerate(watch_states): 
+for i, state in enumerate(states_of_interest): 
     us_transpose.plot(kind='line', x='Days from Today', y=state, color=colors[i], ax=ax)
 
 plt.show()
