@@ -7,8 +7,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'total_cases_27_mar.csv'
-date_title = '27 Mar'
+filename = 'total_cases_29_mar.csv'
+date_title = '29 Mar'
 
 # a change also from inside github
 
@@ -18,11 +18,11 @@ frame['date'] = pd.to_datetime(frame.date)
 # Which Countries are we going to graph
 #countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan', 'Spain Italy+8' ]
 
-countries = ['Italy', 'USA Italy+10', 'Denmark Italy+14', 'UK Italy+15', 'Japan', 'Spain Italy+6' ]
+countries = ['Italy', 'USA Italy+10', 'Denmark Italy+14', 'UK Italy+15', 'Japan', 'Spain Italy+7', 'S. Korea Italy-5' ]
 colors =    [ "red",  "blue",           "green",           "magenta",        "purple",           "orange",     "black",   'yellow']
 reference_date = pd.Timestamp.today()
 
-frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States', 'Denmark', 'Japan', 'United Kingdom', 'Spain'])
+frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States', 'Denmark', 'Japan', 'United Kingdom', 'Spain', 'South Korea'])
 blank_rows = range(0, 55)
 frame3.drop(blank_rows, inplace=True)
 
@@ -41,9 +41,10 @@ frame3['Days from Today'] = frame3['date'].sub(reference_date).dt.days
 frame3['France Italy+8'] = frame3['France'].shift(periods=-8)
 frame3['Germany Italy+8'] = frame3['Germany'].shift(periods=-8)
 frame3['Denmark Italy+14'] = frame3['Denmark'].shift(periods=-14)
-frame3['USA Italy+10'] = frame3['United States'].shift(periods=-10)
+frame3['USA Italy+10'] = frame3['United States'].shift(periods=-8)
 frame3['UK Italy+15'] = frame3['United Kingdom'].shift(periods=-15)
-frame3['Spain Italy+6'] = frame3['Spain'].shift(periods=-6)
+frame3['Spain Italy+7'] = frame3['Spain'].shift(periods=-7)
+frame3['S. Korea Italy-5'] = frame3['South Korea'].shift(periods=5)
 
 # set the title
 plt.title('COVID-19 Confirmed Cases')

@@ -12,8 +12,8 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '27 Mar'
-death_rate_adjustment = 167
+date_title = '28 Mar'
+death_rate_adjustment = 128
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
          'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
@@ -44,7 +44,7 @@ us_transpose.reset_index(inplace=True)
 
 us_transpose.rename(columns = {'index': 'Date'}, inplace=True)
 us_transpose['Date'] = pd.to_datetime(us_transpose['Date'], format='%m/%d/%y')
-
+# 
 # reference date
 reference_date = pd.Timestamp.today()
 # for x axis
