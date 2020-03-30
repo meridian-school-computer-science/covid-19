@@ -7,8 +7,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'total_cases_29_mar.csv'
-date_title = '29 Mar'
+filename = 'total_cases_30_mar.csv'
+date_title = '30 Mar'
 
 # a change also from inside github
 
@@ -41,7 +41,7 @@ frame3['Days from Today'] = frame3['date'].sub(reference_date).dt.days
 frame3['France Italy+8'] = frame3['France'].shift(periods=-8)
 frame3['Germany Italy+8'] = frame3['Germany'].shift(periods=-8)
 frame3['Denmark Italy+14'] = frame3['Denmark'].shift(periods=-14)
-frame3['USA Italy+10'] = frame3['United States'].shift(periods=-8)
+frame3['USA Italy+10'] = frame3['United States'].shift(periods=-6)
 frame3['UK Italy+15'] = frame3['United Kingdom'].shift(periods=-15)
 frame3['Spain Italy+7'] = frame3['Spain'].shift(periods=-7)
 frame3['S. Korea Italy-5'] = frame3['South Korea'].shift(periods=5)
