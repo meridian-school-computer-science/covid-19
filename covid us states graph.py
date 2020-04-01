@@ -12,8 +12,8 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '29 Mar'
-death_rate_adjustment = 115
+date_title = '31 Mar'
+death_rate_adjustment = 92
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
          'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
@@ -32,7 +32,7 @@ state_abbreviation = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA'
 frame = pd.read_csv(path+filename)
 
 
-states_of_interest = ['NY', 'LA NY+5', 'NJ NY+5', 'CA NY+6', 'TX NY+9']  
+states_of_interest = ['NY', 'LA NY+6', 'NJ NY+6', 'CA NY+7', 'TX NY+12']  
 # holding  , 'FL NY+14',   'WA NY+14'
 colors =            [ "red",        "blue",   "green",  "purple",    "black",   "orange",        "yellow" , "magenta"]
                      
@@ -52,22 +52,22 @@ us_transpose['Days from Today'] = us_transpose['Date'].sub(reference_date).dt.da
 
 # build date adjustment State data
 us_transpose['NY'] = death_rate_adjustment * us_transpose['New York']
-us_transpose['LA NY+5'] = death_rate_adjustment * us_transpose['Louisiana'].shift(periods=-5)
-us_transpose['CA NY+6'] = death_rate_adjustment * us_transpose['California'].shift(periods=-6)
-us_transpose['NJ NY+5'] = death_rate_adjustment * us_transpose['New Jersey'].shift(periods=-5)
+us_transpose['LA NY+6'] = death_rate_adjustment * us_transpose['Louisiana'].shift(periods=-6)
+us_transpose['CA NY+7'] = death_rate_adjustment * us_transpose['California'].shift(periods=-7)
+us_transpose['NJ NY+6'] = death_rate_adjustment * us_transpose['New Jersey'].shift(periods=-6)
 #us_transpose['WA NY+14'] = death_rate_adjustment * us_transpose['Washington'].shift(periods=-14)
 #us_transpose['FL NY+14'] = death_rate_adjustment * us_transpose['Florida'].shift(periods=-14)
-us_transpose['TX NY+9'] = death_rate_adjustment * us_transpose['Texas'].shift(periods=-9)
+us_transpose['TX NY+12'] = death_rate_adjustment * us_transpose['Texas'].shift(periods=-12)
 
 
 
 # set the title
 plt.title('States COVID-19 Estimated Cases')
-plt.title('Log Scale', loc='left')
+#plt.title('Log Scale', loc='left')
 plt.title(date_title, loc='right')
 
 ax = plt.gca()  # get current axis
-plt.yscale('log')
+#plt.yscale('log')
 for i, state in enumerate(states_of_interest): 
     us_transpose.plot(kind='line', x='Days from Today', y=state, color=colors[i], ax=ax)
 
