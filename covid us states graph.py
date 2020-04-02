@@ -12,8 +12,8 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '31 Mar'
-death_rate_adjustment = 92
+date_title = '1 Apr'
+death_rate_adjustment = 83
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
          'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
@@ -43,8 +43,8 @@ us_transpose = frame.transpose()
 us_transpose.reset_index(inplace=True)
 
 us_transpose.rename(columns = {'index': 'Date'}, inplace=True)
-us_transpose['Date'] = pd.to_datetime(us_transpose['Date'], format='%m/%d/%y')
-# 
+us_transpose['Date'] = pd.to_datetime(us_transpose['Date'])
+# , format='%m/%d/%y'
 # reference date
 reference_date = pd.Timestamp.today()
 # for x axis
@@ -63,11 +63,11 @@ us_transpose['TX NY+12'] = death_rate_adjustment * us_transpose['Texas'].shift(p
 
 # set the title
 plt.title('States COVID-19 Estimated Cases')
-#plt.title('Log Scale', loc='left')
+plt.title('Log Scale', loc='left')
 plt.title(date_title, loc='right')
 
 ax = plt.gca()  # get current axis
-#plt.yscale('log')
+plt.yscale('log')
 for i, state in enumerate(states_of_interest): 
     us_transpose.plot(kind='line', x='Days from Today', y=state, color=colors[i], ax=ax)
 

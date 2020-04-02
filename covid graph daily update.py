@@ -1,14 +1,15 @@
 # data from 22 March 2020
 # https://ourworldindata.org/coronavirus-source-data
-
+# ecdc data:
+# https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
 import pandas as pd
 import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'total_cases_1_apr.csv'
-date_title = '1 Apr'
+filename = 'total_cases_2_apr.csv'
+date_title = '2 Apr'
 
 # a change also from inside github
 
