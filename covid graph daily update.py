@@ -8,8 +8,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
-filename = 'total_cases_2_apr.csv'
-date_title = '2 Apr'
+filename = 'total_cases_3_apr.csv'
+date_title = '3 Apr'
 
 # a change also from inside github
 
@@ -19,11 +19,14 @@ frame['date'] = pd.to_datetime(frame.date)
 # Which Countries are we going to graph
 #countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan', 'Spain Italy+8' ]
 
-countries = ['Italy', 'USA Italy+10', 'Denmark Italy+14', 'UK Italy+15', 'Japan', 'Spain Italy+7', 'S. Korea Italy-5' ]
+countries = ['Italy', 'USA Italy+10', 'Denmark Italy+14', 'UK Italy+15', 'Japan', 'Spain Italy+7', 'S. Korea Italy-5', 'Sweden Italy+15' ]
 colors =    [ "red",  "blue",           "green",           "magenta",        "purple",           "orange",     "black",   'yellow']
 reference_date = pd.Timestamp.today()
 
-frame3 = pd.DataFrame(frame, columns=['date', 'Italy', 'France', 'Germany', 'United States', 'Denmark', 'Japan', 'United Kingdom', 'Spain', 'South Korea'])
+frame3 = pd.DataFrame(frame, 
+    columns=['date', 'Italy', 'France', 'Germany', 'United States', 
+            'Denmark', 'Japan', 'United Kingdom', 'Spain', 
+            'South Korea', 'Sweden'])
 blank_rows = range(0, 55)
 frame3.drop(blank_rows, inplace=True)
 
@@ -46,6 +49,7 @@ frame3['USA Italy+10'] = frame3['United States'].shift(periods=-6)
 frame3['UK Italy+15'] = frame3['United Kingdom'].shift(periods=-15)
 frame3['Spain Italy+7'] = frame3['Spain'].shift(periods=-7)
 frame3['S. Korea Italy-5'] = frame3['South Korea'].shift(periods=5)
+frame3['Sweden Italy+15'] = frame3['Sweden'].shift(periods=-15)
 
 # set the title
 plt.title('COVID-19 Confirmed Cases')
