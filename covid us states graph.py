@@ -3,7 +3,10 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 
+# https://www.worldometers.info/coronavirus/
+
 # https://www.statista.com/topics/6084/coronavirus-covid-19-in-the-us/
+
 
 
 # here is a new line
@@ -12,8 +15,8 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '4 Apr'
-death_rate_adjustment = 67
+date_title = '5 Apr'
+death_rate_adjustment = 65
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
          'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
