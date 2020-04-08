@@ -13,7 +13,7 @@ import datetime as dt
 
 
 
-path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\'
+path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\us\\'
 filename = 'mac_us_states_deaths.csv'
 date_title = '7 Apr'
 death_rate_adjustment = 53
