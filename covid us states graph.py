@@ -15,7 +15,7 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\us\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '9 Apr'
+date_title = '10 Apr'
 death_rate_adjustment = 45
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
@@ -70,7 +70,7 @@ plt.title('States COVID-19 Estimated Cases')
 plt.title(date_title, loc='right')
 
 ax = plt.gca()  # get current axis
-plt.yscale('log')
+#plt.yscale('log')
 for i, state in enumerate(states_of_interest): 
     us_transpose.plot(kind='line', x='Days from Today', y=state, color=colors[i], ax=ax)
 
