@@ -8,14 +8,15 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_14_apr.csv'
-date_title = '14 Apr'
+filename = 'total_cases_15_apr.csv'
+date_title = '15 Apr'
 
 # a change also from inside github
 
 frame = pd.read_csv(path+filename)
 #frame['date'] = pd.to_datetime(frame.date, format='%d-%m-%Y')
 frame['date'] = pd.to_datetime(frame.date)
+
 # Which Countries are we going to graph
 #countries = ['Italy', 'France Italy+8', 'Germany Italy+8', 'USA Italy+12', 'Denmark Italy+14', 'UK Italy+13', 'Japan', 'Spain Italy+8' ]
 
@@ -31,6 +32,7 @@ colors =    [ "red",  "black", "purple",
 
 reference_date = pd.Timestamp.today()
 
+
 frame3 = pd.DataFrame(frame, 
     columns=['date', 'Italy', 'France', 'Germany', 'United States', 
             'Denmark', 'Japan', 'United Kingdom', 'Spain', 
@@ -41,7 +43,6 @@ frame3.drop(blank_rows, inplace=True)
 
 # for x axis
 frame3['Days from Today'] = frame3['date'].sub(reference_date).dt.days
-
 
 
 # manually adjust a Country's graph based on Italy
