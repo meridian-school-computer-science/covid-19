@@ -15,8 +15,8 @@ import datetime as dt
 
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\us\\'
 filename = 'mac_us_states_deaths.csv'
-date_title = '19 Apr'
-death_rate_adjustment = 33 
+date_title = '20 Apr'
+death_rate_adjustment = 33
 
 states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
          'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
