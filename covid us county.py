@@ -15,6 +15,7 @@ class Settings:
         self.cases_filename = 'covid_confirmed_usafacts.csv'
         self.deaths_filename = 'covid_deaths_usafacts.csv'
         self.population_filename = 'covid_county_population_usafacts.csv'
+        self.county_location_filename = '2019_Gaz_counties_national_lat_lon.csv'
         self.states = ['California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois', 'Ohio', 'Georgia', 'North Carolina',
                         'Michigan', 'New Jersey', 'Virginia', 'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana',
                         'Missouri', 'Maryland', 'Wisconsin', 'Colorado', 'Minnesota', 'South Carolina', 'Alabama', 'Louisiana', 
@@ -35,18 +36,92 @@ class DataReader:
     def __init__(self, path):
         self.path = path
         self.filename = ''
-        self.data = {}
+        self.data = []
 
     def read_file(self, filename):
         self.filename = filename
         self.load_data()
 
     def load_data(self):
+        self.data = []
         with open(self.path+self.filename, newline='',encoding='utf-8-sig') as csvfile:
-            self.data = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                self.data.append(row)
 
     def get_data(self):
         return self.data
 
 
+class AllStates:
 
+    def __init__(self):
+        self.items = dict()
+
+    def add_state(self, code, state):
+        self.items[code] = State(state)
+
+
+class State:
+
+    def __init__(self, details):
+        self.details = details
+        
+
+class RawData():
+
+    def __init__(self, reader):
+        self.reader = reader
+        self.population_data = []
+        self.case_data = []
+        self.death_data = []
+        self.county_location = []
+
+    def get_all_data(self):
+        self.reader.read_file(self.settings.population_filename)
+        self.population_data = self.reader.get_data()
+
+        self.reader.read_file(self.settings.cases_filename)
+        self.case_data = self.reader.get_data()
+
+        self.reader.read_file(self.settings.deaths_filename)
+        self.death_data = self.reader.get_data()
+
+        self.reader.read_file(self.settings.county_location_filename)
+        self.county_location = self.reader.get_data()
+
+
+class DataParser:
+
+    def __init__(self, raw_data, all_states, all_counties):
+        self.raw_data = raw_data
+        self.all_states = all_states
+        self.all_counties = all_counties
+
+    def build_models(self):
+        pass
+
+
+
+class Controller:
+
+    def __init__(self):
+        self.settings = Settings()
+        self.reader = DataReader(self.settings.path)
+        self.raw_data = RawData(self.reader)
+        self.all_states = AllStates()
+        self.all_counties = AllCounties()
+        self.parser = DataReader(self.raw_data, self.all_states, self.all_counties)
+        self.get_all_data()
+        self.build_models()
+
+    def get_all_data(self):
+        self.raw_data.get_all_data()
+
+    def build_models(self):
+        self.parser.build_models()
+
+
+    
+
+my_controller = Controller()
