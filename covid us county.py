@@ -68,6 +68,44 @@ class State:
         self.details = details
         
 
+class AllCounties:
+
+    def __init__(self):
+        self.items = dict()
+
+    def add_county(self, id_, county):
+        self.items[id_] = county
+
+
+class County:
+
+    def __init__(self, id_, name, state, population):
+        self.id_ = id_
+        self.name = name
+        self.state = state
+        self.population = population
+        self.lat = 0.0
+        self.lon = 0.0
+        self.date_data = {}
+
+    def add_date_data(self, date, details):
+        self.date_data[date] = details
+
+
+class DateData:
+
+    def __init__(self):
+        self.date = ''
+        self.confirmed = ''
+        self.deaths = ''
+
+    def get_date_details(self):
+        return (self.date, {'confirmed': self.confirmed, 'deaths': self.deaths})
+
+
+
+
+
 class RawData():
 
     def __init__(self, reader):
