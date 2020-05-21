@@ -38,13 +38,23 @@ class DataReader:
         self.filename = ''
         self.data = []
 
-    def read_file(self, filename):
+    def read_file(self, filename, encode=True):
         self.filename = filename
-        self.load_data()
+        if encode:
+            self.load_data_utf()
+        else:
+            self.load_data()
+
+    def load_data_utf(self):
+        self.data = []
+        with open(self.path+self.filename, newline='',encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                self.data.append(row)
 
     def load_data(self):
         self.data = []
-        with open(self.path+self.filename, newline='',encoding='utf-8-sig') as csvfile:
+        with open(self.path+self.filename, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 self.data.append(row)
@@ -76,6 +86,12 @@ class AllCounties:
     def add_county(self, id_, county):
         self.items[id_] = county
 
+    def __str__(self):
+        build = ''
+        for each_county in self.items.values():
+            build = build + str(each_county) + '\n'
+        return build
+
 
 class County:
 
@@ -91,6 +107,9 @@ class County:
     def add_date_data(self, date, details):
         self.date_data[date] = details
 
+    def __str__(self):
+        return f"{self.id_}: {self.name}, {self.state}. ({self.lat}, {self.lon}). Pop: {int(self.population):,}"
+
 
 class DateData:
 
@@ -103,29 +122,27 @@ class DateData:
         return (self.date, {'confirmed': self.confirmed, 'deaths': self.deaths})
 
 
-
-
-
 class RawData():
 
-    def __init__(self, reader):
+    def __init__(self, reader, controller):
         self.reader = reader
+        self.controller = controller
         self.population_data = []
         self.case_data = []
         self.death_data = []
         self.county_location = []
 
     def get_all_data(self):
-        self.reader.read_file(self.settings.population_filename)
+        self.reader.read_file(self.controller.settings.population_filename)
         self.population_data = self.reader.get_data()
 
-        self.reader.read_file(self.settings.cases_filename)
+        self.reader.read_file(self.controller.settings.cases_filename)
         self.case_data = self.reader.get_data()
 
-        self.reader.read_file(self.settings.deaths_filename)
+        self.reader.read_file(self.controller.settings.deaths_filename)
         self.death_data = self.reader.get_data()
 
-        self.reader.read_file(self.settings.county_location_filename)
+        self.reader.read_file(self.controller.settings.county_location_filename, False)
         self.county_location = self.reader.get_data()
 
 
@@ -135,9 +152,29 @@ class DataParser:
         self.raw_data = raw_data
         self.all_states = all_states
         self.all_counties = all_counties
+        self.county_codes = []
+        
 
     def build_models(self):
-        pass
+        texas_pop = []
+        for each in self.raw_data.population_data:
+            if each['State'] == 'TX':
+                texas_pop.append(each)
+                self.county_codes.append(each['countyFIPS'])
+        for each in texas_pop:
+            each_county = County(each['countyFIPS'], each['County Name'], each['State'], each['population'])
+            self.all_counties.add_county(each['countyFIPS'], each_county)
+        self.add_county_location_details()
+        print(self.county_codes)
+
+    def add_county_location_details(self):
+        texas_location = {}
+        for each in self.raw_data.county_location:
+            if each['USPS'] == 'TX':
+                texas_location[each['GEOID']] = (each['LAT'], each['LON'])
+        for k, v in texas_location.items():
+            self.all_counties.items[k].lat = v[0]
+            self.all_counties.items[k].lon = v[1]
 
 
 
@@ -146,10 +183,10 @@ class Controller:
     def __init__(self):
         self.settings = Settings()
         self.reader = DataReader(self.settings.path)
-        self.raw_data = RawData(self.reader)
+        self.raw_data = RawData(self.reader, self)
         self.all_states = AllStates()
         self.all_counties = AllCounties()
-        self.parser = DataReader(self.raw_data, self.all_states, self.all_counties)
+        self.parser = DataParser(self.raw_data, self.all_states, self.all_counties)
         self.get_all_data()
         self.build_models()
 
