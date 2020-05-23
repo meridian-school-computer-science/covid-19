@@ -1,5 +1,8 @@
+#https://covidtracking.com/api
+
 import pandas as pd
 import csv
+import copy
 from matplotlib import pyplot as plt
 import datetime as dt
 
@@ -116,9 +119,33 @@ class DateData:
         self.date = ''
         self.confirmed = ''
         self.deaths = ''
+        self.non_dates = ['countyFIPS', 'County Name', 'State', 'stateFIPS', 'GEOID']
 
     def get_date_details(self):
         return (self.date, {'confirmed': self.confirmed, 'deaths': self.deaths})
+
+        #format for date records: 
+        # key is date :: date time group obj
+        # value is dictionary of: key : values -> 'confirmed' : int, 'deaths' : int
+        # can we get data on hospitalizations by county? 
+        # can we get testing data by county?
+
+    def build_date_based_dictionary_confirmed(self, raw_dict):
+        selected_keys = list()
+        working = copy.deepcopy(raw_dict)
+        # remove key:value for non-date tuples
+        # convert date to a dtg (make sure it is ok for that to be a key)
+        # add to a temp dictionary key=data, value(dictionary) or a list?
+        for k in working.keys():
+            if k in self.non_dates:
+                selected_keys.append(k)
+        
+        for each_k in selected_keys:
+            del working[each_k]
+
+
+
+
 
 
 class RawData():
@@ -168,7 +195,9 @@ class DataParser:
                 self.county_codes.remove('0')
             except:
                 done = True
-        print(self.county_codes)
+        #print(self.county_codes)
+
+        print(self.raw_data.death_data['48001'])
         # for each_id in texas_ids:
         #     each_county = County(each['countyFIPS'], each['County Name'], each['State'], each['population'])
         #     self.all_counties.add_county(each['countyFIPS'], each_county)
