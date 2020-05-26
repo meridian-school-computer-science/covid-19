@@ -8,8 +8,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_25_may.csv'
-date_title = '25 May'
+filename = 'total_cases_26_may.csv'
+date_title = '26 May'
 
 # a change also from inside github
 
@@ -61,6 +61,7 @@ frame3['S. Korea Italy-3'] = frame3['South Korea'].shift(periods=3)
 frame3['Sweden Italy+12'] = frame3['Sweden'].shift(periods=-12)
 frame3['Japan Italy-2'] = frame3['Japan'].shift(periods=2)
 
+fig=plt.figure(figsize=(10,8))
 # set the title
 plt.title('COVID-19 Confirmed Cases')
 plt.title('Log Scale', loc='left')
