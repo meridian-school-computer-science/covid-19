@@ -1,10 +1,11 @@
 #https://covidtracking.com/api
 
-import pandas as pd
+#import pandas as pd
 import csv
 import copy
+import datetime
 from matplotlib import pyplot as plt
-import datetime as dt
+
 
 
 
@@ -31,6 +32,9 @@ class Settings:
                                     'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
                                     'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
                                     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
+        self.colors =    [ "red",  "black", "purple", 
+                            "blue", "magenta", "orange",
+                            "yellow", "green"]
         self.death_rate_adjustment = 250
 
 
@@ -130,7 +134,7 @@ class DateData:
         # can we get data on hospitalizations by county? 
         # can we get testing data by county?
 
-    def build_date_based_dictionary_confirmed(self, raw_dict):
+    def clear_non_data(self, raw_dict):
         selected_keys = list()
         working = copy.deepcopy(raw_dict)
         # remove key:value for non-date tuples
@@ -142,10 +146,7 @@ class DateData:
         
         for each_k in selected_keys:
             del working[each_k]
-
-
-
-
+        return working
 
 
 class RawData():
@@ -172,22 +173,38 @@ class RawData():
         self.county_location = self.reader.get_data()
 
 
+
 class DataParser:
 
     def __init__(self, raw_data, all_states, all_counties):
         self.raw_data = raw_data
         self.all_states = all_states
         self.all_counties = all_counties
+        self.date_data = DateData()
         self.county_codes = []
         self.state_interest = ['TX']
+        self.county_interest = ['48491', '48453']
+        self.filtered_data = dict()
+        self.map_data = dict()
+        self.graph_data = dict()
         
 
-    def build_models(self):
-        for each_state in self.state_interest:
+    def set_filtered_data(self, filters={'counties':['48491', '48453']}):
+        self.county_interest = filters['counties']
+        self.filtered_data = dict()
+        #filter by countyFIPS
+        for each_county in self.county_interest:
             for key, value in self.raw_data.population_data.items():
-                if value['State'] == each_state:
-                    self.county_codes.append(key)
-        
+                if value['countyFIPS'] == each_county:
+                    self.county_codes.append(key)      
+
+
+        #filter by state
+        # for each_state in self.state_interest:
+        #     for key, value in self.raw_data.population_data.items():
+        #         if value['State'] == each_state:
+        #             self.county_codes.append(key)
+
         # get rid of all 0
         done = False
         while not done:
@@ -195,23 +212,89 @@ class DataParser:
                 self.county_codes.remove('0')
             except:
                 done = True
-        #print(self.county_codes)
 
-        print(self.raw_data.death_data['48001'])
-        # for each_id in texas_ids:
-        #     each_county = County(each['countyFIPS'], each['County Name'], each['State'], each['population'])
-        #     self.all_counties.add_county(each['countyFIPS'], each_county)
-        # self.add_county_location_details()
-        # print(self.county_codes)
+        for each_county in self.county_codes:
+            one_county = {
+                'County Name' : self.raw_data.population_data[each_county]['County Name'],
+                'State' : self.raw_data.population_data[each_county]['State'],
+                'Population' : self.raw_data.population_data[each_county]['population'], 
+                'LAT' : self.raw_data.county_location[each_county]['LAT'],
+                'LON' : self.raw_data.county_location[each_county]['LON']
+            }
+            self.filtered_data[each_county] = one_county
 
-    def add_county_location_details(self):
-        texas_location = {}
-        for each in self.raw_data.county_location:
-            if each['USPS'] == 'TX':
-                texas_location[each['GEOID']] = (each['LAT'], each['LON'])
-        for k, v in texas_location.items():
-            self.all_counties.items[k].lat = v[0]
-            self.all_counties.items[k].lon = v[1]
+
+    def set_mapping_data(self):
+        self.set_filtered_data()
+        self.map_data = self.filtered_data
+
+    def set_graphing_data(self):
+        self.graph_data = self.filtered_data    
+        temp_data = dict()
+        for key in self.graph_data.keys():
+            temp_data[key] = dict()
+            temp_cases = self.raw_data.case_data[key]
+            temp_deaths = self.raw_data.death_data[key]
+            temp_data[key]['Cases'] = temp_cases
+            temp_data[key]['Deaths'] = temp_deaths
+           
+        print(temp_data)
+
+
+        # I need to stay with temp data and clear the other not date stuff first
+        for k, v in temp_data.items():
+
+            self.graph_data[k]['Cases'] = self.convert_details_to_dict(v['Cases'])
+            self.graph_data[k]['Deaths'] = self.convert_details_to_dict(v['Deaths'])
+
+        print(self.graph_data)
+        #     temp_data[k] = self.date_data.clear_non_data(v)
+        #     print(temp_data[k])
+
+        # for k, v in temp_data.items():
+        #     print(f"Key {k} : {v}")
+
+
+    def convert_details_to_dict(self, details):
+        working = dict()
+        for county_key in details.keys():
+            county_working = dict()
+            for k, v in details[county_key].items():
+                date_key = datetime.datetime.strptime(k, '%m/%d/%y')
+                county_working[date_key] = int(v)
+            working[county_key] = county_working
+        return working  
+
+
+
+class Graph:
+
+    def __init__(self):
+        self.settings = Settings()
+        self.style = 'line'
+        self.main_title = 'Test Graph'
+        self.left_title = 'Log Scale'
+        self.right_title = 'dates'
+        self.yscale = 'log'
+        self.series = list()
+        self.dates = list()
+        self.values = list()
+
+    def set_graph(self, graph_data):
+        self.series = list(graph_data.keys())
+        self.dates = list(graph_data['48453'].keys())
+        self.values = list(graph_data['48453'].values())
+        print(self.series)
+        plt.title(self.main_title)
+        plt.title(self.left_title, loc='left')
+        plt.title(self.right_title, loc='right')
+        ax = plt.gca()
+        plt.yscale(self.yscale)
+
+        for i, line_plot in enumerate(self.series):
+            plt.plot(self.dates, 
+                    self.values, color=self.settings.colors[i])
+        plt.show()
 
 
 
@@ -224,15 +307,21 @@ class Controller:
         self.all_states = AllStates()
         self.all_counties = AllCounties()
         self.parser = DataParser(self.raw_data, self.all_states, self.all_counties)
+        self.grapher = Graph()
         self.get_all_data()
-        self.build_models()
+        self.filter_data()
+        self.display_graph()
 
     def get_all_data(self):
         self.raw_data.get_all_data()
 
-    def build_models(self):
-        self.parser.build_models()
+    def filter_data(self):
+        self.parser.set_mapping_data()
+        self.parser.set_graphing_data()
 
+
+    def display_graph(self):
+        self.grapher.set_graph(self.parser.graph_data)
 
     
 

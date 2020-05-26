@@ -8,8 +8,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_23_may.csv'
-date_title = '23 May'
+filename = 'total_cases_25_may.csv'
+date_title = '25 May'
 
 # a change also from inside github
 

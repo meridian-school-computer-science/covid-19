@@ -163,6 +163,7 @@ class DataParser:
             if each['State'] == 'TX':
                 texas_pop.append(each)
                 self.county_codes.append(each['countyFIPS'])
+
         for each in texas_pop:
             each_county = County(each['countyFIPS'], each['County Name'], each['State'], each['population'])
             self.all_counties.add_county(each['countyFIPS'], each_county)
