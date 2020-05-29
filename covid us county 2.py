@@ -3,9 +3,9 @@
 #import pandas as pd
 import csv
 import copy
-import datetime
+from datetime import datetime, timedelta
 from matplotlib import pyplot as plt
-
+from matplotlib import dates as mpl_dates
 
 
 
@@ -180,10 +180,13 @@ class DataParser:
         self.raw_data = raw_data
         self.all_states = all_states
         self.all_counties = all_counties
+        self.non_dates = ['countyFIPS', 'County Name', 'State', 'stateFIPS', 'GEOID']
         self.date_data = DateData()
         self.county_codes = []
         self.state_interest = ['TX']
         self.county_interest = ['48491', '48453']
+        self.date_interest = 15
+        self.today = datetime.today()
         self.filtered_data = dict()
         self.map_data = dict()
         self.graph_data = dict()
@@ -223,6 +226,19 @@ class DataParser:
             }
             self.filtered_data[each_county] = one_county
 
+    def clear_non_data(self, raw_dict):
+        selected_keys = list()
+        working = copy.deepcopy(raw_dict)
+        # remove key:value for non-date tuples
+        # convert date to a dtg (make sure it is ok for that to be a key)
+        # add to a temp dictionary key=data, value(dictionary) or a list?
+        for k in working.keys():
+            if k in self.non_dates:
+                selected_keys.append(k)
+        
+        for each_k in selected_keys:
+            del working[each_k]
+        return working
 
     def set_mapping_data(self):
         self.set_filtered_data()
@@ -235,19 +251,24 @@ class DataParser:
             temp_data[key] = dict()
             temp_cases = self.raw_data.case_data[key]
             temp_deaths = self.raw_data.death_data[key]
-            temp_data[key]['Cases'] = temp_cases
-            temp_data[key]['Deaths'] = temp_deaths
-           
-        print(temp_data)
+            temp_cases = self.clear_non_data(temp_cases)
+            temp_deaths = self.clear_non_data(temp_deaths)
+            temp_cases = self.convert_details_to_dict(temp_cases)
+            temp_deaths = self.convert_details_to_dict(temp_deaths)
+            self.graph_data[key]['Cases'] = temp_cases
+            self.graph_data[key]['Deaths'] = temp_deaths
 
+   
+        #print(self.graph_data)
+  
 
         # I need to stay with temp data and clear the other not date stuff first
-        for k, v in temp_data.items():
+        # for k, v in temp_data.items():
 
-            self.graph_data[k]['Cases'] = self.convert_details_to_dict(v['Cases'])
-            self.graph_data[k]['Deaths'] = self.convert_details_to_dict(v['Deaths'])
+        #     self.graph_data[k]['Cases'] = self.convert_details_to_dict(v['Cases'])
+        #     self.graph_data[k]['Deaths'] = self.convert_details_to_dict(v['Deaths'])
 
-        print(self.graph_data)
+        # print(self.graph_data)
         #     temp_data[k] = self.date_data.clear_non_data(v)
         #     print(temp_data[k])
 
@@ -256,14 +277,12 @@ class DataParser:
 
 
     def convert_details_to_dict(self, details):
-        working = dict()
-        for county_key in details.keys():
-            county_working = dict()
-            for k, v in details[county_key].items():
-                date_key = datetime.datetime.strptime(k, '%m/%d/%y')
+        county_working = dict()
+        for k, v in details.items():
+            date_key = datetime.strptime(k, '%m/%d/%y')
+            if date_key >= self.today - timedelta(days=self.date_interest):
                 county_working[date_key] = int(v)
-            working[county_key] = county_working
-        return working  
+        return county_working
 
 
 
@@ -275,28 +294,39 @@ class Graph:
         self.main_title = 'Test Graph'
         self.left_title = 'Log Scale'
         self.right_title = 'dates'
-        self.yscale = 'log'
+        self.format_yscale = 'linear'
         self.series = list()
         self.dates = list()
         self.values = list()
 
     def set_graph(self, graph_data):
-        self.series = list(graph_data.keys())
-        self.dates = list(graph_data['48453'].keys())
-        self.values = list(graph_data['48453'].values())
-        print(self.series)
+        self.series = graph_data
+        fig=plt.figure(figsize=(8, 6))
         plt.title(self.main_title)
         plt.title(self.left_title, loc='left')
         plt.title(self.right_title, loc='right')
-        ax = plt.gca()
-        plt.yscale(self.yscale)
+        ax = plt.gca() # sets ax from get current axis
+        date_format = mpl_dates.DateFormatter('%d %b')
+        ax.xaxis.set_major_formatter(date_format)
+        plt.yscale(self.format_yscale)
+        plt.gcf().autofmt_xdate()
 
-        for i, line_plot in enumerate(self.series):
+        i = 0
+        for k, v in self.series.items():
+            self.dates = list(v['Cases'].keys())
+            self.values = list(v['Cases'].values())
             plt.plot(self.dates, 
                     self.values, color=self.settings.colors[i])
+            i += 1
         plt.show()
 
 
+
+# try plt.plot_date(dates, y, linestyle='solid')
+#plt.gcf().autofmt_xdate()
+#matplotlib import dates as mpl_dates
+#date_format = mpl_datesDateFormatter('%b, %d %Y')
+#plt.gca().xaxis.set_major_formatter(date_format)
 
 class Controller:
 
