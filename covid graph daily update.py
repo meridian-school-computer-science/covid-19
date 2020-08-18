@@ -1,5 +1,8 @@
 # data from 22 March 2020
+
 # https://ourworldindata.org/coronavirus-source-data
+
+
 # github: https://github.com/owid/covid-19-data/tree/master/public/data/ecdc
 # ecdc data:
 # https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
@@ -9,8 +12,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_17_aug.csv'
-date_title = '17 Aug'
+filename = 'total_cases_18_aug.csv'
+date_title = '18 Aug'
 
 # a change also from inside github
 
