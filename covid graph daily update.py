@@ -12,8 +12,8 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_19_aug.csv'
-date_title = '19 Aug'
+filename = 'total_cases_20_aug.csv'
+date_title = '20 Aug'
 
 # a change also from inside github
 
@@ -75,6 +75,7 @@ plt.title(date_title, loc='right')
 # set x current axis with a logritmetic scale that greatly helps see the pace of exponential increase
 ax = plt.gca()  
 plt.yscale('log')
+#plt.yscale('linear')
 
 # based on the countries list: construct the graph
 for i, country in enumerate(countries): 
