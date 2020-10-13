@@ -12,8 +12,13 @@ import csv
 from matplotlib import pyplot as plt
 import datetime as dt
 path = 'C:\\Users\\k_mac\\OneDrive\\Meridian\\h Computer Science\\Teacher Projects\\COVID\\data\\global\\'
-filename = 'total_cases_12_oct.csv'
-date_title = '12 Oct'
+filename = 'total_cases_13_oct.csv'
+date_title = '13 Oct'
+
+""" DATA SOURCE:
+Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020)
+I access it from: https://ourworldindata.org/coronavirus-source-data
+"""
 
 # a change also from inside github
 
